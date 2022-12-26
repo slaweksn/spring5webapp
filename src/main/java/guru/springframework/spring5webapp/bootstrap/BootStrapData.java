@@ -16,8 +16,9 @@ public class BootStrapData implements CommandLineRunner {
 	private final BookRepository bookRepository;
 	private final AuthorRepository authorRepository;
 	private final PublisherRepository publisherRepository;
-	
-	public BootStrapData(BookRepository bookRepository, AuthorRepository authorRepository, PublisherRepository publisherRepository) {
+
+	public BootStrapData(BookRepository bookRepository, AuthorRepository authorRepository,
+			PublisherRepository publisherRepository) {
 		super();
 		this.bookRepository = bookRepository;
 		this.authorRepository = authorRepository;
@@ -28,32 +29,43 @@ public class BootStrapData implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
 
+		System.out.println("Started in Bootstrap");
+
+		Publisher publisher = new Publisher();
+		publisher.setName("SFG Publishing");
+		publisher.setCity("St Petersburg");
+		publisher.setState("FL");
+
+		publisherRepository.save(publisher);
+
+		System.out.println("Publisher Count: " + publisherRepository.count());
+
 		Author eric = new Author("Eric", "Evans");
 		Book ddd = new Book("Domain Driven Design", "123123");
 		eric.getBooks().add(ddd);
 		ddd.getAuthors().add(eric);
-		
+
+		ddd.setPublisher(publisher);
+		publisher.getBooks().add(ddd);
+
 		authorRepository.save(eric);
-        bookRepository.save(ddd);
+		bookRepository.save(ddd);
+		publisherRepository.save(publisher);
 
-        Author rod = new Author("Rod", "Johnson");
-        Book noEJB = new Book("J2EE Development without EJB", "3939459459");
-        rod.getBooks().add(noEJB);
-        noEJB.getAuthors().add(rod);
+		Author rod = new Author("Rod", "Johnson");
+		Book noEJB = new Book("J2EE Development without EJB", "3939459459");
+		rod.getBooks().add(noEJB);
+		noEJB.getAuthors().add(rod);
 
-        authorRepository.save(rod);
-        bookRepository.save(noEJB);
+		noEJB.setPublisher(publisher);
+		publisher.getBooks().add(noEJB);
 
-        System.out.println("Started in Bootstrap");
-        System.out.println("Number of Books: " + bookRepository.count());
-        
-        Publisher publisher1 = new Publisher("publisher_01", "New York", "NY", "12-123");
-        Publisher publisher2 = new Publisher("publisher_01", "New York", "NY", "12-123");
-        
-        publisherRepository.save(publisher1);
-        publisherRepository.save(publisher2);
-        
-        System.out.println("Number of Publishers: " + publisherRepository.count());
+		authorRepository.save(rod);
+		bookRepository.save(noEJB);
+		publisherRepository.save(publisher);
+
+		System.out.println("Number of Books: " + bookRepository.count());
+		System.out.println("Publisher Number of Books: " + publisher.getBooks().size());
 	}
 
 }
